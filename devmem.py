@@ -108,11 +108,6 @@ class DevMem:
         self.length = stop - self.base_addr
         self.fname = filename
 
-        # Check filesize (doesn't work with /dev/mem)
-        #filesize = os.stat(self.fname).st_size
-        #if (self.base_addr + self.length) > filesize:
-        #    self.length = filesize - self.base_addr
-
         self.debug('init with base_addr = {0} and length = {1} on {2}'.
                 format(hex(self.base_addr), hex(self.length), self.fname))
 
@@ -162,7 +157,9 @@ class DevMem:
         mem = self.mem
 
         # Compensate for the base_address not being what the user requested
-        offset += self.base_addr_offset
+        # if address offset is not zero then, we will end up reading from,
+        # different location.
+        # offset += self.base_addr_offset
 
         # Check that the operation is going write to an aligned location
         if (offset & ~self.mask): raise AssertionError
